@@ -132,10 +132,14 @@ const denyPointButton = document.getElementById("denyPointButton");
 const raceModal = document.getElementById("raceModal");
 const raceModalLabel = document.getElementById("raceModalLabel");
 const raceModalValue = document.getElementById("raceModalValue");
+const raceModalTimerFill = document.getElementById("raceModalTimerFill");
+const raceModalTimerText = document.getElementById("raceModalTimerText");
 const raceModalText = document.getElementById("raceModalText");
 const raceModalActions = document.getElementById("raceModalActions");
 const raceModalLabelMirror = document.getElementById("raceModalLabelMirror");
 const raceModalValueMirror = document.getElementById("raceModalValueMirror");
+const raceModalTimerFillMirror = document.getElementById("raceModalTimerFillMirror");
+const raceModalTimerTextMirror = document.getElementById("raceModalTimerTextMirror");
 const raceModalTextMirror = document.getElementById("raceModalTextMirror");
 const raceModalActionsMirror = document.getElementById("raceModalActionsMirror");
 const awardPointButtonMirror = document.getElementById("awardPointButtonMirror");
@@ -145,6 +149,10 @@ const raceScoreTop = document.getElementById("raceScoreTop");
 const raceScoreBottom = document.getElementById("raceScoreBottom");
 const racePlayerTop = document.getElementById("racePlayerTop");
 const racePlayerBottom = document.getElementById("racePlayerBottom");
+const racePlayerTimerTop = document.getElementById("racePlayerTimerTop");
+const racePlayerTimerFillTop = document.getElementById("racePlayerTimerFillTop");
+const racePlayerTimerBottom = document.getElementById("racePlayerTimerBottom");
+const racePlayerTimerFillBottom = document.getElementById("racePlayerTimerFillBottom");
 const racePlayerLabelTop = document.getElementById("racePlayerLabelTop");
 const racePlayerLabelBottom = document.getElementById("racePlayerLabelBottom");
 const raceLeadTop = document.getElementById("raceLeadTop");
@@ -256,7 +264,7 @@ function getRaceActiveLetters() {
 }
 
 function getAvailableRaceLetters() {
-    return getRaceActiveLetters().filter((letter) => !raceDrawnLetters.includes(letter));
+    return getRaceActiveLetters();
 }
 
 function getAvailableRaceCategories() {
@@ -290,21 +298,37 @@ function closeRaceModal() {
     raceModalValueMirror.hidden = false;
 }
 
+function updateRaceCountdownDisplay() {
+    const safeValue = Math.max(0, Math.min(raceCountdownSeconds, raceCountdownValue));
+    const progress = raceCountdownSeconds > 0 ? (safeValue / raceCountdownSeconds) * 100 : 0;
+    const timerText = `${safeValue} s`;
+    const showPlayerTimerTop = racePhase === "countdown" && raceResponder === "top";
+    const showPlayerTimerBottom = racePhase === "countdown" && raceResponder === "bottom";
+
+    raceModalTimerFill.style.width = `${progress}%`;
+    raceModalTimerFillMirror.style.width = `${progress}%`;
+    raceModalTimerText.textContent = timerText;
+    raceModalTimerTextMirror.textContent = timerText;
+
+    racePlayerTimerTop.hidden = !showPlayerTimerTop;
+    racePlayerTimerBottom.hidden = !showPlayerTimerBottom;
+    racePlayerTimerFillTop.style.width = showPlayerTimerTop ? `${progress}%` : "0%";
+    racePlayerTimerFillBottom.style.width = showPlayerTimerBottom ? `${progress}%` : "0%";
+}
+
 function openRaceCountdownModal(player) {
     raceModal.hidden = false;
     const label = getResponderLabel(player);
     const text = `Ma ${raceCountdownSeconds} sekundy na odpowiedź.`;
-    const val = String(raceCountdownValue);
     raceModalLabel.textContent = label;
     raceModalValue.hidden = false;
-    raceModalValue.textContent = val;
     raceModalText.textContent = text;
     raceModalActions.hidden = true;
     raceModalLabelMirror.textContent = label;
     raceModalValueMirror.hidden = false;
-    raceModalValueMirror.textContent = val;
     raceModalTextMirror.textContent = text;
     raceModalActionsMirror.hidden = true;
+    updateRaceCountdownDisplay();
 }
 
 function openRaceJudgeModal() {
@@ -382,6 +406,10 @@ function updateRaceBoxes() {
 function updateRaceHighlights() {
     racePlayerTop.classList.toggle("is-active", raceResponder === "top" && (racePhase === "countdown" || racePhase === "judging"));
     racePlayerBottom.classList.toggle("is-active", raceResponder === "bottom" && (racePhase === "countdown" || racePhase === "judging"));
+    racePlayerTop.classList.toggle("is-countdown", raceResponder === "top" && racePhase === "countdown");
+    racePlayerBottom.classList.toggle("is-countdown", raceResponder === "bottom" && racePhase === "countdown");
+    racePlayerTop.classList.toggle("is-judging", raceResponder === "top" && racePhase === "judging");
+    racePlayerBottom.classList.toggle("is-judging", raceResponder === "bottom" && racePhase === "judging");
 }
 
 function syncRaceControls() {
@@ -396,13 +424,16 @@ function syncRaceControls() {
     const drawBoxActive = canDraw || canBuzz;
     drawBox.classList.toggle("drawbox-answer", canBuzz);
     drawBoxMirror.classList.toggle("drawbox-answer", canBuzz);
+    drawBox.classList.toggle("is-buzz-ready", canBuzz);
+    drawBoxMirror.classList.toggle("is-buzz-ready", canBuzz);
     drawBox.classList.toggle("is-disabled", !drawBoxActive);
     drawBox.setAttribute("aria-disabled", String(!drawBoxActive));
     drawBoxMirror.classList.toggle("is-disabled", !drawBoxActive);
     drawBoxMirror.setAttribute("aria-disabled", String(!drawBoxActive));
-    drawBoxHint.textContent = canBuzz ? "ODPOWIADAM" : canDraw ? "Losuj" : "";
-    drawBoxHintMirror.textContent = canBuzz ? "ODPOWIADAM" : canDraw ? "Losuj" : "";
-    skipRoundButton.hidden = !canBuzz;
+    drawBoxHint.textContent = canDraw ? "Losuj" : "";
+    drawBoxHintMirror.textContent = canDraw ? "Losuj" : "";
+    skipRoundButton.hidden = false;
+    skipRoundButton.disabled = !canBuzz;
     resetRaceButton.disabled = raceIsDrawing;
     awardPointButton.disabled = racePhase !== "judging" || raceAwardVotes.has("bottom");
     denyPointButton.disabled = racePhase !== "judging";
@@ -416,6 +447,7 @@ function renderRaceState() {
     updateRacePlayerLabels();
     updateRaceLead();
     updateRaceHighlights();
+    updateRaceCountdownDisplay();
     syncRaceControls();
 }
 
@@ -513,7 +545,7 @@ function loadRaceState() {
         raceStatus.textContent = "Losuj pierwszą rundę.";
         closeRaceModal();
     } else if (racePhase === "open") {
-        raceStatus.textContent = "Kliknij Odpowiadam. Kto pierwszy kliknie, ten odpowiada.";
+        raceStatus.textContent = "Kliknij pulsujący kafel. Kto pierwszy kliknie, ten odpowiada.";
         closeRaceModal();
     } else if (racePhase === "judging") {
         raceStatus.textContent = `Czas minął. Zdecyduj, czy ${getResponderLabel(raceResponder).toLowerCase()} dostaje punkt.`;
@@ -529,14 +561,13 @@ function loadRaceState() {
 function finishRaceDraw(nextLetter, nextCategory) {
     raceCurrentLetter = nextLetter;
     raceCurrentCategory = nextCategory;
-    raceDrawnLetters.push(nextLetter);
     raceDrawnCategories.push(nextCategory);
     racePhase = "open";
     raceResponder = null;
     raceIsDrawing = false;
     drawBox.classList.remove("is-drawing");
     drawBoxMirror.classList.remove("is-drawing");
-    raceStatus.textContent = "Kliknij Odpowiadam. Kto pierwszy kliknie, ten odpowiada.";
+    raceStatus.textContent = "Kliknij pulsujący kafel. Kto pierwszy kliknie, ten odpowiada.";
     closeRaceModal();
     saveRaceState();
     renderRaceState();
@@ -566,8 +597,8 @@ function drawRaceRound() {
     const availableLetters = getAvailableRaceLetters();
     const availableCategories = getAvailableRaceCategories();
 
-    if (availableLetters.length === 0 || availableCategories.length === 0) {
-        raceStatus.textContent = "Brak kolejnych liter lub kategorii. Kliknij reset, aby zacząć od nowa.";
+    if (availableCategories.length === 0) {
+        raceStatus.textContent = "Brak kolejnych kategorii. Kliknij reset, aby zacząć od nowa.";
         renderRaceState();
         return;
     }
@@ -637,15 +668,13 @@ function startRaceResponse(player) {
         raceCountdownValue -= 1;
 
         if (raceCountdownValue <= 0) {
-            raceModalValue.textContent = "0";
-            raceModalValueMirror.textContent = "0";
+            updateRaceCountdownDisplay();
             playRaceCountdownSound(0);
             openRaceJudging();
             return;
         }
 
-        raceModalValue.textContent = String(raceCountdownValue);
-        raceModalValueMirror.textContent = String(raceCountdownValue);
+        updateRaceCountdownDisplay();
         playRaceCountdownSound(raceCountdownValue);
     }, 1000);
 
@@ -724,8 +753,6 @@ function resetRaceMode() {
     raceRounds.length = 0;
     raceSkippedRounds = 0;
     raceAwardVotes.clear();
-    raceModalValue.textContent = String(raceCountdownSeconds);
-    raceModalValueMirror.textContent = String(raceCountdownSeconds);
     drawBox.classList.remove("is-drawing");
     drawBoxMirror.classList.remove("is-drawing");
     raceStatus.textContent = "Losuj pierwszą rundę.";

@@ -770,18 +770,107 @@ button.duel-letter-box:active,
 }
 
 .race-player-card {
+    position: relative;
+    overflow: hidden;
     display: grid;
     gap: 12px;
     padding: 18px;
     border-radius: 22px;
     background: rgba(51, 51, 51, 0.04);
     border: 1px solid rgba(51, 51, 51, 0.06);
-    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+
+.race-player-card::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 12px;
+    height: 4px;
+    border-radius: 999px;
+    opacity: 0;
+    transform: scaleX(0.3);
+    transform-origin: center;
+    transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
 .race-player-card.is-active {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(19, 72, 55, 0.12);
+}
+
+.race-player-card.is-active::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+#racePlayerTop.is-active {
     border-color: rgba(29, 107, 82, 0.45);
-    background: rgba(29, 107, 82, 0.08);
+    background: rgba(29, 107, 82, 0.1);
+}
+
+#racePlayerBottom.is-active {
+    border-color: rgba(178, 66, 40, 0.45);
+    background: rgba(178, 66, 40, 0.1);
+}
+
+#racePlayerTop.is-active::after {
+    background: linear-gradient(90deg, rgba(29, 107, 82, 0.12), rgba(29, 107, 82, 0.95), rgba(29, 107, 82, 0.12));
+}
+
+#racePlayerBottom.is-active::after {
+    background: linear-gradient(90deg, rgba(178, 66, 40, 0.12), rgba(178, 66, 40, 0.95), rgba(178, 66, 40, 0.12));
+}
+
+.race-player-card.is-countdown {
+    filter: brightness(1.03);
+}
+
+.race-player-card.is-countdown .race-score {
+    animation: race-score-pulse 0.95s ease-in-out infinite;
+}
+
+.race-player-card.is-judging .race-score {
+    transform: scale(1.04);
+}
+
+.race-player-timer {
+    position: relative;
+    height: 6px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(51, 51, 51, 0.12);
+}
+
+.race-player-timer-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #f0b24d, #b24228);
+    transition: width 1s linear;
+}
+
+#racePlayerTop .race-player-timer-fill {
+    background: linear-gradient(90deg, #8ed0b8, #1d6b52);
+}
+
+@keyframes race-score-pulse {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.07);
+        filter: brightness(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
 }
 
 .race-player-label {
@@ -876,7 +965,7 @@ button.duel-letter-box:active,
     background: linear-gradient(135deg, var(--text), #4f4f4f);
     cursor: pointer;
     user-select: none;
-    transition: transform 0.18s ease, opacity 0.18s ease, background 0.35s ease;
+    transition: transform 0.18s ease, opacity 0.18s ease, background 0.35s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 
 .drawbox:hover {
@@ -887,6 +976,11 @@ button.duel-letter-box:active,
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
 }
 
+.drawbox.is-buzz-ready,
+.drawbox-mirror.is-buzz-ready {
+    animation: buzz-ready-pulse 1s ease-in-out infinite;
+}
+
 .drawbox.is-disabled {
     opacity: 0.55;
     cursor: not-allowed;
@@ -895,18 +989,62 @@ button.duel-letter-box:active,
 
 .drawbox-mirror {
     transform: rotate(180deg);
+    transition: opacity 0.18s ease, background 0.35s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 
 .drawbox-mirror:hover {
-    transform: rotate(180deg) translateY(-1px);
+    transform: rotate(180deg);
 }
 
 .drawbox-mirror.is-disabled {
     transform: rotate(180deg);
 }
 
+@keyframes buzz-ready-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(29, 107, 82, 0.36);
+        filter: brightness(1);
+    }
+
+    50% {
+        box-shadow: 0 0 0 18px rgba(29, 107, 82, 0);
+        filter: brightness(1.12);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(29, 107, 82, 0);
+        filter: brightness(1);
+    }
+}
+
 .drawbox.is-drawing {
     animation: pulse-draw 0.7s ease;
+}
+
+.drawbox-mirror.is-drawing {
+    animation: pulse-draw-mirror 0.7s ease;
+}
+
+@keyframes pulse-draw-mirror {
+    0% {
+        box-shadow: 0 0 0 0 rgba(51, 51, 51, 0);
+        filter: brightness(1);
+    }
+
+    35% {
+        box-shadow: 0 6px 18px rgba(19, 72, 55, 0.16);
+        filter: brightness(1.08);
+    }
+
+    70% {
+        box-shadow: 0 3px 12px rgba(19, 72, 55, 0.08);
+        filter: brightness(0.98);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(51, 51, 51, 0);
+        filter: brightness(1);
+    }
 }
 
 .drawbox-letter {
@@ -918,7 +1056,7 @@ button.duel-letter-box:active,
 
 .drawbox-category {
     color: rgba(255, 255, 255, 0.85);
-    font-size: clamp(1.1rem, 4vw, 1.8rem);
+    font-size: clamp(1.5rem, 5.2vw, 2.45rem);
     font-weight: 600;
     text-align: center;
 }
@@ -1037,9 +1175,34 @@ button.duel-letter-box:active,
 }
 
 .race-modal-value {
-    font-size: clamp(3rem, 18vw, 4.8rem);
-    line-height: 1;
+    display: grid;
+    gap: 10px;
+}
+
+.race-modal-timer {
+    position: relative;
+    height: 18px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(51, 51, 51, 0.1);
+    border: 1px solid rgba(51, 51, 51, 0.08);
+}
+
+.race-modal-timer-fill {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #f0b24d, #b24228);
+    transition: width 1s linear;
+}
+
+.race-modal-timer-text {
+    margin: 0;
+    font-size: 0.92rem;
     font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: #b24228;
 }
 
@@ -1256,6 +1419,7 @@ button.duel-letter-box:active,
 
     .race-mode-card {
         width: 100%;
+        padding-bottom: max(94px, calc(var(--safe-bottom) + 94px));
     }
 
     .race-buzz-button {
@@ -1267,11 +1431,25 @@ button.duel-letter-box:active,
     }
 
     .race-app-controls {
-        right: 10px;
+        top: auto;
+        left: max(12px, var(--safe-left));
+        right: max(12px, var(--safe-right));
+        bottom: max(12px, calc(var(--safe-bottom) + 12px));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        transform: none;
+        padding: 10px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(51, 51, 51, 0.08);
+        box-shadow: 0 16px 34px rgba(19, 72, 55, 0.12);
+        backdrop-filter: blur(10px);
     }
 
     .race-app-control {
-        min-width: 84px;
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
     }
 
     .race-history-list {
@@ -1332,12 +1510,16 @@ button.duel-letter-box:active,
     }
 
     .race-app-controls {
-        right: 8px;
+        left: max(8px, var(--safe-left));
+        right: max(8px, var(--safe-right));
+        bottom: max(8px, calc(var(--safe-bottom) + 8px));
+        gap: 8px;
+        padding: 8px;
     }
 
     .race-app-control {
-        min-width: 76px;
         min-height: 36px;
         font-size: 0.78rem;
+        padding: 8px 6px;
     }
 }

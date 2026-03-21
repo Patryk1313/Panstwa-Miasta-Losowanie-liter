@@ -19,6 +19,9 @@
                     <div class="race-player-card" id="racePlayerTop">
                         <p class="race-player-label" id="racePlayerLabelTop">Gracz górny</p>
                         <strong class="race-score" id="raceScoreTop">0 pkt</strong>
+                        <div class="race-player-timer" id="racePlayerTimerTop" hidden>
+                            <span class="race-player-timer-fill" id="racePlayerTimerFillTop"></span>
+                        </div>
                         <button id="raceBuzzTop" type="button" class="race-buzz-button">ODPOWIADAM</button>
                     </div>
                 </section>
@@ -49,6 +52,9 @@
                     <div class="race-player-card" id="racePlayerBottom">
                         <p class="race-player-label" id="racePlayerLabelBottom">Gracz dolny</p>
                         <strong class="race-score" id="raceScoreBottom">0 pkt</strong>
+                        <div class="race-player-timer" id="racePlayerTimerBottom" hidden>
+                            <span class="race-player-timer-fill" id="racePlayerTimerFillBottom"></span>
+                        </div>
                         <button id="raceBuzzBottom" type="button" class="race-buzz-button">ODPOWIADAM</button>
                     </div>
                 </section>
@@ -65,7 +71,12 @@
     <div class="race-modal-backdrop" id="raceModal" hidden>
         <div class="race-modal race-modal-mirror">
             <p class="race-modal-label" id="raceModalLabelMirror">Blitz</p>
-            <div class="race-modal-value" id="raceModalValueMirror">3</div>
+            <div class="race-modal-value" id="raceModalValueMirror">
+                <div class="race-modal-timer" aria-hidden="true">
+                    <span class="race-modal-timer-fill" id="raceModalTimerFillMirror"></span>
+                </div>
+                <p class="race-modal-timer-text" id="raceModalTimerTextMirror">5 s</p>
+            </div>
             <p class="race-modal-text" id="raceModalTextMirror">Gracz odpowiada.</p>
             <div class="race-modal-actions" id="raceModalActionsMirror" hidden>
                 <button id="awardPointButtonMirror" type="button">Przyznaj punkt</button>
@@ -74,7 +85,12 @@
         </div>
         <div class="race-modal" role="dialog" aria-modal="true" aria-labelledby="raceModalLabel">
             <p class="race-modal-label" id="raceModalLabel">Blitz</p>
-            <div class="race-modal-value" id="raceModalValue">3</div>
+            <div class="race-modal-value" id="raceModalValue">
+                <div class="race-modal-timer" aria-hidden="true">
+                    <span class="race-modal-timer-fill" id="raceModalTimerFill"></span>
+                </div>
+                <p class="race-modal-timer-text" id="raceModalTimerText">5 s</p>
+            </div>
             <p class="race-modal-text" id="raceModalText">Gracz odpowiada.</p>
             <div class="race-modal-actions" id="raceModalActions" hidden>
                 <button id="awardPointButton" type="button">Przyznaj punkt</button>
