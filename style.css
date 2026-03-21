@@ -14,7 +14,6 @@
 
 * {
     box-sizing: border-box;
-    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -58,7 +57,6 @@ body {
 .card {
     display: block;
     width: min(100%, 460px);
-    min-height: min(92vh, 860px);
     min-height: min(92dvh, 860px);
     margin: 0 auto;
     padding: clamp(18px, 5vw, 32px);
@@ -66,9 +64,7 @@ body {
     border-radius: 28px;
     background: rgba(255, 255, 255);
     box-shadow: var(--shadow);
-    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
-    max-height: min(92vh, 860px);
     max-height: min(92dvh, 860px);
     overflow: auto;
     overscroll-behavior: contain;
@@ -146,7 +142,6 @@ h1 {
     border: 1px solid rgba(51, 51, 51, 0.08);
     background: rgba(255, 255, 255, 0.95);
     /* box-shadow: 0 20px 40px rgba(51, 51, 51, 0.16); */
-    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     display: grid;
     gap: 10px;
@@ -379,7 +374,6 @@ h1 {
     position: fixed;
     left: 50%;
     top: 50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     z-index: 999;
     border-radius: 14px;
@@ -392,6 +386,42 @@ h1 {
 
 .stop-countdown-box.is-visible {
     display: grid;
+}
+
+/* Dual mode wrapper (1vs1.html) */
+.stop-countdown-pair {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    gap: 10px;
+    align-items: center;
+}
+
+.stop-countdown-pair.is-visible {
+    display: flex;
+}
+
+.stop-countdown-pair .stop-countdown-box {
+    display: grid;
+    position: static;
+    transform: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    min-width: 110px;
+    min-height: 110px;
+    font-size: 2.6rem;
+}
+
+.stop-countdown-pair .stop-countdown-box.is-dismissed {
+    opacity: 0.18;
+    pointer-events: none;
+}
+
+.stop-countdown-pair .stop-countdown-top {
+    transform: rotate(180deg);
 }
 
 button {
@@ -607,19 +637,26 @@ button:disabled {
 }
 
 .duel-mode-card {
-    width: min(100%, 1080px);
-}
-
-.duel-layout {
-    display: grid;
-    grid-template-columns: minmax(140px, 190px) minmax(0, 1fr) minmax(140px, 190px);
-    gap: 18px;
-    align-items: start;
+    width: min(100%, 560px);
 }
 
 .duel-board {
     display: grid;
-    gap: 18px;
+    gap: 12px;
+}
+
+.duel-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.duel-divider::before,
+.duel-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
 }
 
 .duel-history {
@@ -627,28 +664,23 @@ button:disabled {
     min-height: 0;
 }
 
-.duel-history-left {
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg);
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
 .duel-history-list {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: clamp(220px, 40vh, 360px);
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: clamp(80px, 16vh, 130px);
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 4px 12px 0;
+    padding: 0 0 6px 0;
 }
 
 .duel-history-letter {
-    width: 100%;
-    min-width: 0;
-    min-height: 54px;
+    width: auto;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 0 10px;
+    font-size: 1rem;
+    border-radius: 10px;
 }
 
 .duel-side {
@@ -657,11 +689,7 @@ button:disabled {
 }
 
 .duel-side-top {
-    -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
 }
 
 .duel-letter-box {
@@ -691,12 +719,12 @@ button.duel-letter-box:active,
 }
 
 .duel-reset-button {
-    align-self: center;
+    flex-shrink: 0;
     width: auto;
     min-height: 0;
     padding: 8px 22px;
     font-size: 0.82rem;
-    opacity: 0.6;
+    opacity: 0.55;
 }
 
 .duel-reset-button:hover,
@@ -741,7 +769,6 @@ button.duel-letter-box:active,
         border-right: 0;
         box-shadow: none;
         background: rgba(255, 255, 255, 0.96);
-        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
     }
 
@@ -806,10 +833,6 @@ button.duel-letter-box:active,
         width: 100%;
     }
 
-    .duel-layout {
-        gap: 8px;
-    }
-
     .duel-board {
         gap: 10px;
     }
@@ -819,14 +842,17 @@ button.duel-letter-box:active,
     }
 
     .duel-history-list {
-        gap: 6px;
-        max-height: clamp(80px, 15dvh, 140px);
-        padding-bottom: 6px;
+        gap: 5px;
+        max-height: clamp(70px, 14dvh, 110px);
+        padding-bottom: 4px;
     }
 
     .duel-history-letter {
-        min-height: 40px;
-        font-size: 0.9rem;
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 0.88rem;
+        padding: 0 8px;
+        border-radius: 8px;
     }
 
     .duel-letter-box {
@@ -837,17 +863,6 @@ button.duel-letter-box:active,
     .duel-stop-button {
         min-height: 44px;
         font-size: 0.82rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .duel-layout {
-        grid-template-columns: minmax(72px, 110px) minmax(0, 1fr) minmax(72px, 110px);
-        gap: 10px;
-    }
-
-    .duel-history {
-        margin-bottom: 0;
     }
 }
 
@@ -891,6 +906,6 @@ button.duel-letter-box:active,
 
     .history-list,
     .duel-history-list {
-        gap: 8px;
+        gap: 5px;
     }
 }

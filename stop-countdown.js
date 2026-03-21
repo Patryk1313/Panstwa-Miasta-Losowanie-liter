@@ -1,7 +1,18 @@
 const stopTriggers = Array.from(document.querySelectorAll("[data-stop-trigger='true']"));
+
+// Single-box mode (index.html)
 const stopCountdownBox = document.getElementById("stopCountdownBox");
 
+// Dual-box mode (1vs1.html)
+const stopCountdownPair = document.getElementById("stopCountdownPair");
+const stopCountdownTop = document.getElementById("stopCountdownTop");
+const stopCountdownBottom = document.getElementById("stopCountdownBottom");
+
+const isDualMode = stopCountdownPair !== null;
+
 let stopCountdownInterval = null;
+let topDismissed = false;
+let bottomDismissed = false;
 
 function _getAudioCtx() {
     if (!window._stopAudioCtx) {
@@ -59,32 +70,77 @@ function clearStopCountdown() {
     }
 }
 
-function startStopCountdown() {
-    if (!stopTriggers.length || !stopCountdownBox) { return; }
+function hidePair() {
+    stopCountdownPair.classList.remove("is-visible");
+    topDismissed = false;
+    bottomDismissed = false;
+    stopCountdownTop.classList.remove("is-dismissed");
+    stopCountdownBottom.classList.remove("is-dismissed");
+}
 
+function dismissBox() {
+    clearStopCountdown();
+    stopCountdownTop.classList.add("is-dismissed");
+    stopCountdownBottom.classList.add("is-dismissed");
+    window.setTimeout(hidePair, 300);
+}
+
+function startStopCountdown() {
+    if (!stopTriggers.length) { return; }
     clearStopCountdown();
 
-    let remaining = 10;
-    stopCountdownBox.textContent = `${remaining}S`;
-    stopCountdownBox.classList.add("is-visible");
-    playCountdownTick(remaining);
+    if (isDualMode) {
+        topDismissed = false;
+        bottomDismissed = false;
+        stopCountdownTop.classList.remove("is-dismissed");
+        stopCountdownBottom.classList.remove("is-dismissed");
 
-    stopCountdownInterval = window.setInterval(() => {
-        remaining -= 1;
-        stopCountdownBox.textContent = `${remaining}S`;
+        let remaining = 10;
+        stopCountdownTop.textContent = remaining;
+        stopCountdownBottom.textContent = remaining;
+        stopCountdownPair.classList.add("is-visible");
         playCountdownTick(remaining);
 
-        if (remaining <= 0) {
-            clearStopCountdown();
-            window.setTimeout(() => {
-                stopCountdownBox.classList.remove("is-visible");
-            }, 250);
-        }
-    }, 1000);
+        stopCountdownInterval = window.setInterval(() => {
+            remaining -= 1;
+            if (!topDismissed) { stopCountdownTop.textContent = remaining; }
+            if (!bottomDismissed) { stopCountdownBottom.textContent = remaining; }
+            playCountdownTick(remaining);
+
+            if (remaining <= 0) {
+                clearStopCountdown();
+                window.setTimeout(hidePair, 250);
+            }
+        }, 1000);
+    } else {
+        if (!stopCountdownBox) { return; }
+        let remaining = 10;
+        stopCountdownBox.textContent = `${remaining}S`;
+        stopCountdownBox.classList.add("is-visible");
+        playCountdownTick(remaining);
+
+        stopCountdownInterval = window.setInterval(() => {
+            remaining -= 1;
+            stopCountdownBox.textContent = `${remaining}S`;
+            playCountdownTick(remaining);
+
+            if (remaining <= 0) {
+                clearStopCountdown();
+                window.setTimeout(() => {
+                    stopCountdownBox.classList.remove("is-visible");
+                }, 250);
+            }
+        }, 1000);
+    }
 }
 
 if (stopTriggers.length) {
     stopTriggers.forEach((trigger) => {
         trigger.addEventListener("click", startStopCountdown);
     });
+}
+
+if (isDualMode) {
+    stopCountdownTop.addEventListener("click", dismissBox);
+    stopCountdownBottom.addEventListener("click", dismissBox);
 }

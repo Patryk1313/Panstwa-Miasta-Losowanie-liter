@@ -18,43 +18,44 @@
             <h1>Tryb 1vs1</h1>
             <a class="small-nav" href="index.html">Wróć</a>
 
-            <div class="duel-layout">
-                <aside class="history duel-history duel-history-left" aria-label="Historia gracza górnego">
-                    <div class="history-header">
-                        <span>Historia</span>
-                        <strong id="duelRemainingCountLeft">22 litery</strong>
-                    </div>
-                    <div class="history-list duel-history-list" id="duelHistoryListLeft">
-                        <span class="history-empty">Brak losowań</span>
-                    </div>
-                </aside>
+            <div class="duel-board">
+                <section class="duel-side duel-side-top" aria-label="Gracz górny">
+                    <button id="duelLetterTop" type="button" class="letter-box duel-letter-box">?</button>
+                    <button type="button" class="button-secondary duel-stop-button" data-stop-trigger="true">STOP</button>
+                    <aside class="history duel-history" aria-label="Historia gracza górnego">
+                        <div class="history-header">
+                            <span>Historia</span>
+                            <strong id="duelRemainingCountLeft">22 litery</strong>
+                        </div>
+                        <div class="history-list duel-history-list" id="duelHistoryListLeft">
+                            <span class="history-empty">Brak losowań</span>
+                        </div>
+                    </aside>
+                </section>
 
-                <div class="duel-board">
-                    <section class="duel-side duel-side-top" aria-label="Gracz górny">
-                        <button id="duelLetterTop" type="button" class="letter-box duel-letter-box">?</button>
-                        <button type="button" class="button-secondary duel-stop-button" data-stop-trigger="true">STOP</button>
-                    </section>
-
+                <div class="duel-divider">
                     <button id="duelResetButton" type="button" class="button-secondary duel-reset-button">Resetuj</button>
-
-                    <section class="duel-side" aria-label="Gracz dolny">
-                        <button id="duelLetterBottom" type="button" class="letter-box duel-letter-box">?</button>
-                        <button type="button" class="button-secondary duel-stop-button" data-stop-trigger="true">STOP</button>
-                    </section>
                 </div>
 
-                <aside class="history duel-history" aria-label="Historia gracza dolnego">
-                    <div class="history-header">
-                        <span>Historia</span>
-                        <strong id="duelRemainingCountRight">22 litery</strong>
-                    </div>
-                    <div class="history-list duel-history-list" id="duelHistoryListRight">
-                        <span class="history-empty">Brak losowań</span>
-                    </div>
-                </aside>
+                <section class="duel-side" aria-label="Gracz dolny">
+                    <button id="duelLetterBottom" type="button" class="letter-box duel-letter-box">?</button>
+                    <button type="button" class="button-secondary duel-stop-button" data-stop-trigger="true">STOP</button>
+                    <aside class="history duel-history" aria-label="Historia gracza dolnego">
+                        <div class="history-header">
+                            <span>Historia</span>
+                            <strong id="duelRemainingCountRight">22 litery</strong>
+                        </div>
+                        <div class="history-list duel-history-list" id="duelHistoryListRight">
+                            <span class="history-empty">Brak losowań</span>
+                        </div>
+                    </aside>
+                </section>
             </div>
 
-            <div class="stop-countdown-box" id="stopCountdownBox">10S</div>
+            <div class="stop-countdown-pair" id="stopCountdownPair">
+                <div class="stop-countdown-box stop-countdown-top" id="stopCountdownTop">10</div>
+                <div class="stop-countdown-box stop-countdown-bottom" id="stopCountdownBottom">10</div>
+            </div>
         </section>
     </main>
 
