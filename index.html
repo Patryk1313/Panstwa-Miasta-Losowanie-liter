@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losowanie Litery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="floating-options" id="floatingOptions">
+        <button id="optionsButton" type="button" class="button-secondary button-option" aria-expanded="false" aria-controls="optionsPanel">Ustawienia</button>
+
+        <div class="options-panel" id="optionsPanel" aria-hidden="true">
+            <label class="option-row" for="excludeYVOption">
+                <input id="excludeYVOption" type="checkbox">
+                <span>Graj bez Y, V i X</span>
+            </label>
+            <label class="option-row" for="soundOffOption">
+                <input id="soundOffOption" type="checkbox">
+                <span>Wylacz dzwiek</span>
+            </label>
+        </div>
+    </div>
+
+    <main class="app">
+        <section class="card">
+            <p class="eyebrow">Państwa Miasta</p>
+            <h1>Losowanie litery</h1>
+            <a class="small-nav" href="kategorie.html">Losuj kategorie</a>
+
+            <div class="letter-box" id="letterBox">?</div>
+
+            <div class="meta">
+                <div class="meta-item">
+                    <span>Liczba losowan</span>
+                    <strong id="drawCount">0</strong>
+                </div>
+            </div>
+
+            <div class="history">
+                <div class="history-header">
+                    <span>Historia losowan</span>
+                    <strong id="remainingCount">26 liter zostalo</strong>
+                </div>
+                <div class="history-list" id="historyList">
+                    <span class="history-empty">Brak wylosowanych liter</span>
+                </div>
+            </div>
+
+            <p class="status" id="statusMessage">Gotowe do pierwszego losowania.</p>
+
+            <div class="actions">
+                <button id="drawButton" type="button">Losuj litere</button>
+                <button id="resetButton" type="button" class="button-secondary">Resetuj</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

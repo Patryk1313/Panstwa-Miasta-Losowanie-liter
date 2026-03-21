@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losowanie Kategorii</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+        <section class="card">
+            <p class="eyebrow">Państwa Miasta</p>
+            <h1>Losowanie kategorii</h1>
+            <a class="small-nav" href="index.html">Wróć do losowania liter</a>
+
+            <div class="category-box" id="categoryBox">Państwo i Miasto</div>
+            <p class="category-note" id="categoryInfo">Domyślna kategoria: Państwo-Miasto.</p>
+
+            <div class="meta">
+                <div class="meta-item">
+                    <span>Liczba losowan</span>
+                    <strong id="categoryDrawCount">0</strong>
+                </div>
+                <div class="meta-item">
+                    <span>Pozostało kategorii</span>
+                    <strong id="categoryRemainingCount">0</strong>
+                </div>
+            </div>
+
+            <div class="history">
+                <div class="history-header">
+                    <span>Historia kategorii</span>
+                    <strong>Kliknij kategorię, aby usunąć</strong>
+                </div>
+                <div class="history-list" id="categoryHistoryList">
+                    <span class="history-empty">Brak historii</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="drawCategoryButton" type="button">Losuj kategorie</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="kategorie.js"></script>
+</body>
+</html>
