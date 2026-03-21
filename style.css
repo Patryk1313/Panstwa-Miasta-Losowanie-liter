@@ -394,20 +394,6 @@ h1 {
     display: grid;
 }
 
-.stop-countdown-top {
-    top: 50%;
-    left: calc(50% - 10px);
-    -webkit-transform: translate(-100%, -50%) rotate(180deg);
-    transform: translate(-100%, -50%) rotate(180deg);
-}
-
-.stop-countdown-bottom {
-    top: 50%;
-    left: calc(50% + 10px);
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
 button {
     width: 100%;
     border: 0;

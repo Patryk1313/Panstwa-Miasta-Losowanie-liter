@@ -1,7 +1,7 @@
 const stopTriggers = Array.from(document.querySelectorAll("[data-stop-trigger='true']"));
-
-// single-box mode (index.html)
 const stopCountdownBox = document.getElementById("stopCountdownBox");
+
+let stopCountdownInterval = null;
 
 function _getAudioCtx() {
     if (!window._stopAudioCtx) {
@@ -52,47 +52,6 @@ function playCountdownTick(remaining) {
     } catch (_) {}
 }
 
-// dual-box mode (1vs1.html)
-const stopCountdownTop = document.getElementById("stopCountdownTop");
-const stopCountdownBottom = document.getElementById("stopCountdownBottom");
-
-const isDualMode = stopCountdownTop !== null && stopCountdownBottom !== null;
-
-let stopCountdownInterval = null;
-
-function setBoxes(value) {
-    if (isDualMode) {
-        stopCountdownTop.textContent = value;
-        stopCountdownBottom.textContent = value;
-    } else if (stopCountdownBox) {
-        stopCountdownBox.textContent = `${value}S`;
-    }
-}
-
-function showBoxes() {
-    if (isDualMode) {
-        stopCountdownTop.removeAttribute("hidden");
-        stopCountdownBottom.removeAttribute("hidden");
-        stopCountdownTop.classList.add("is-visible");
-        stopCountdownBottom.classList.add("is-visible");
-    } else if (stopCountdownBox) {
-        stopCountdownBox.classList.add("is-visible");
-    }
-}
-
-function hideBoxes() {
-    if (isDualMode) {
-        stopCountdownTop.classList.remove("is-visible");
-        stopCountdownBottom.classList.remove("is-visible");
-        window.setTimeout(() => {
-            stopCountdownTop.setAttribute("hidden", "");
-            stopCountdownBottom.setAttribute("hidden", "");
-        }, 250);
-    } else if (stopCountdownBox) {
-        stopCountdownBox.classList.remove("is-visible");
-    }
-}
-
 function clearStopCountdown() {
     if (stopCountdownInterval !== null) {
         window.clearInterval(stopCountdownInterval);
@@ -101,24 +60,25 @@ function clearStopCountdown() {
 }
 
 function startStopCountdown() {
-    if (!stopTriggers.length) { return; }
-    if (!isDualMode && !stopCountdownBox) { return; }
+    if (!stopTriggers.length || !stopCountdownBox) { return; }
 
     clearStopCountdown();
 
     let remaining = 10;
-    setBoxes(remaining);
-    showBoxes();
+    stopCountdownBox.textContent = `${remaining}S`;
+    stopCountdownBox.classList.add("is-visible");
     playCountdownTick(remaining);
 
     stopCountdownInterval = window.setInterval(() => {
         remaining -= 1;
-        setBoxes(remaining);
+        stopCountdownBox.textContent = `${remaining}S`;
         playCountdownTick(remaining);
 
         if (remaining <= 0) {
             clearStopCountdown();
-            hideBoxes();
+            window.setTimeout(() => {
+                stopCountdownBox.classList.remove("is-visible");
+            }, 250);
         }
     }, 1000);
 }
