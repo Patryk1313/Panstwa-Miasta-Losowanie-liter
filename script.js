@@ -9,7 +9,8 @@ const statusMessage = document.getElementById("statusMessage");
 const drawButton = document.getElementById("drawButton");
 const resetButton = document.getElementById("resetButton");
 const timerDisplay = document.getElementById("timerDisplay");
-const timerSelect = document.getElementById("timerSelect");
+const timerPanel = document.getElementById("timerPanel");
+const timerHint = document.getElementById("timerHint");
 const optionsButton = document.getElementById("optionsButton");
 const optionsPanel = document.getElementById("optionsPanel");
 const floatingOptions = document.getElementById("floatingOptions");
@@ -134,6 +135,9 @@ function formatTime(totalSeconds) {
 function updateTimerDisplay() {
     timerDisplay.textContent = formatTime(timerRemaining);
     timerDisplay.classList.toggle("timer-warning", timerRemaining <= 10);
+    const isRunning = timerIntervalId !== null;
+    timerPanel.classList.toggle("is-running", isRunning);
+    timerHint.textContent = isRunning ? "kliknij aby zatrzymać" : "kliknij aby zmienić czas";
 }
 
 function stopTimer() {
@@ -233,7 +237,6 @@ function loadState() {
 
     normalizeStateToSettings();
     syncOptionsUI();
-    timerSelect.value = String(timerDuration);
     resetTimerToDuration();
     renderState();
 }
@@ -358,14 +361,15 @@ function handleSoundOptionChange() {
     saveState();
 }
 
-function handleTimerChange() {
-    const nextDuration = Number(timerSelect.value);
-
-    if (!timerOptions.includes(nextDuration)) {
+function handleTimerPanelClick() {
+    if (timerIntervalId !== null) {
+        resetTimerToDuration();
+        saveState();
         return;
     }
 
-    timerDuration = nextDuration;
+    const currentIdx = timerOptions.indexOf(timerDuration);
+    timerDuration = timerOptions[(currentIdx + 1) % timerOptions.length];
     resetTimerToDuration();
     saveState();
 }
@@ -425,6 +429,6 @@ resetButton.addEventListener("click", resetState);
 optionsButton.addEventListener("click", toggleOptionsPanel);
 excludeYVOption.addEventListener("change", handleExcludeYVChange);
 soundOffOption.addEventListener("change", handleSoundOptionChange);
-timerSelect.addEventListener("change", handleTimerChange);
+timerPanel.addEventListener("click", handleTimerPanelClick);
 document.addEventListener("keydown", handleKeyboardShortcuts);
 loadState();

@@ -1,11 +1,15 @@
 :root {
-    --bg: #f1f1f1f1;
+    --bg: #ffffff;
     --text: #333333;
     --card: #ffffff;
     --accent: #1d6b52;
     --accent-dark: #134837;
     --border: rgba(51, 51, 51, 0.08);
-    --shadow: 0 24px 60px rgba(51, 51, 51, 0.12);
+    --shadow: none;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
 }
 
 * {
@@ -30,9 +34,8 @@ body {
     font-family: "Poppins", sans-serif;
     color: var(--text);
     background:
-        radial-gradient(circle at top left, rgba(29, 107, 82, 0.14), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(19, 72, 55, 0.12), transparent 24%),
         var(--bg);
+    overflow-x: hidden;
 }
 
 .app {
@@ -41,22 +44,30 @@ body {
     display: grid;
     place-items: center;
     padding: clamp(12px, 3.5vw, 24px);
+    padding-top: max(clamp(12px, 3.5vw, 24px), var(--safe-top));
+    padding-right: max(clamp(12px, 3.5vw, 24px), var(--safe-right));
+    padding-bottom: max(clamp(12px, 3.5vw, 24px), var(--safe-bottom));
+    padding-left: max(clamp(12px, 3.5vw, 24px), var(--safe-left));
 }
 
 .floating-options + .app {
-    padding-top: clamp(64px, 10vw, 92px);
+    padding-top: max(clamp(64px, 10vw, 92px), calc(var(--safe-top) + 58px));
 }
 
 .card {
+    display: block;
     width: min(100%, 460px);
+    min-height: min(92dvh, 860px);
+    margin: 0 auto;
     padding: clamp(18px, 5vw, 32px);
     border: 1px solid var(--border);
     border-radius: 28px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255);
     box-shadow: var(--shadow);
     backdrop-filter: blur(12px);
     max-height: min(92dvh, 860px);
     overflow: auto;
+    overscroll-behavior: contain;
 }
 
 .eyebrow {
@@ -95,6 +106,17 @@ h1 {
     background: rgba(255, 255, 255, 0.95);
 }
 
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.nav-links .small-nav {
+    margin-bottom: 0;
+}
+
 .floating-options {
     position: fixed;
     top: 14px;
@@ -107,7 +129,7 @@ h1 {
     padding: 10px 14px;
     border-radius: 12px;
     font-size: 0.88rem;
-    box-shadow: 0 10px 24px rgba(51, 51, 51, 0.14);
+    /* box-shadow: 0 10px 24px rgba(51, 51, 51, 0.14); */
 }
 
 .options-panel {
@@ -119,7 +141,7 @@ h1 {
     border-radius: 16px;
     border: 1px solid rgba(51, 51, 51, 0.08);
     background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 20px 40px rgba(51, 51, 51, 0.16);
+    /* box-shadow: 0 20px 40px rgba(51, 51, 51, 0.16); */
     backdrop-filter: blur(8px);
     display: grid;
     gap: 10px;
@@ -167,13 +189,12 @@ h1 {
     font-size: clamp(3.6rem, 18vw, 6rem);
     font-weight: 700;
     cursor: pointer;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.18s ease;
 }
 
 .letter-box.animate {
     transform: scale(1.03);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 20px 40px rgba(29, 107, 82, 0.22);
+
 }
 
 .letter-box.is-drawing {
@@ -229,12 +250,31 @@ h1 {
 
 .timer-panel {
     display: grid;
-    gap: 10px;
+    gap: 6px;
     margin-bottom: 18px;
     padding: 16px;
     border-radius: 18px;
     border: 1px solid rgba(51, 51, 51, 0.08);
     background: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+}
+
+.timer-panel:hover {
+    background: rgba(51, 51, 51, 0.04);
+}
+
+.timer-panel.is-running {
+    border-color: var(--accent);
+    background: rgba(29, 107, 82, 0.05);
+}
+
+.timer-hint {
+    margin: 0;
+    font-size: 0.78rem;
+    opacity: 0.55;
+    pointer-events: none;
 }
 
 .timer-label {
@@ -254,22 +294,6 @@ h1 {
 
 .timer-display.timer-warning {
     color: #b24228;
-}
-
-.timer-select-label {
-    font-size: 0.84rem;
-    font-weight: 600;
-    opacity: 0.75;
-}
-
-.timer-panel select {
-    width: 100%;
-    border: 1px solid rgba(51, 51, 51, 0.15);
-    border-radius: 10px;
-    padding: 8px 10px;
-    font: inherit;
-    color: var(--text);
-    background: #ffffff;
 }
 
 .history {
@@ -304,6 +328,7 @@ h1 {
     max-height: min(220px, 32vh);
     overflow: auto;
     padding-right: 4px;
+    align-content: flex-start;
 }
 
 .history-empty {
@@ -322,7 +347,6 @@ h1 {
     background: #ffffff;
     color: var(--text);
     font-weight: 600;
-    box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.08);
 }
 
 .status {
@@ -335,6 +359,34 @@ h1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+}
+
+.actions > :nth-child(3) {
+    grid-column: 1 / -1;
+}
+
+.stop-countdown-box {
+    display: none;
+    place-items: center;
+    min-width: 160px;
+    min-height: 90px;
+    padding: 14px 18px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    border-radius: 14px;
+    border: 3px solid rgba(178, 66, 40, 0.5);
+    background: rgba(255, 255, 255, 0.96);
+
+    color: #b24228;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.stop-countdown-box.is-visible {
+    display: grid;
 }
 
 button {
@@ -541,11 +593,290 @@ button:disabled {
     font-size: 0.86rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.08);
     transition: transform 0.14s ease, background-color 0.14s ease;
 }
 
 .history-category:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.92);
+}
+
+.duel-mode-card {
+    width: min(100%, 1080px);
+}
+
+.duel-layout {
+    display: grid;
+    grid-template-columns: minmax(140px, 190px) minmax(0, 1fr) minmax(140px, 190px);
+    gap: 18px;
+    align-items: start;
+}
+
+.duel-board {
+    display: grid;
+    gap: 18px;
+}
+
+.duel-history {
+    margin-bottom: 0;
+    min-height: 0;
+}
+
+.duel-history-left {
+    transform: rotate(180deg);
+}
+
+.duel-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: clamp(220px, 40vh, 360px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 4px 12px 0;
+}
+
+.duel-history-letter {
+    width: 100%;
+    min-width: 0;
+    min-height: 54px;
+}
+
+.duel-side {
+    display: grid;
+    gap: 12px;
+}
+
+.duel-side-top {
+    transform: rotate(180deg);
+}
+
+.duel-letter-box {
+    margin-bottom: 0;
+    border: 0;
+    width: 100%;
+    padding: 0;
+    min-height: clamp(130px, 34vw, 180px);
+    transition: none;
+}
+
+button.duel-letter-box:hover,
+button.duel-letter-box:active,
+.duel-stop-button:hover,
+.duel-stop-button:active {
+    transform: none;
+    opacity: 1;
+}
+
+.duel-letter-box.is-drawing {
+    animation: pulse-draw 0.7s ease;
+}
+
+.duel-remaining {
+    font-size: 0.88rem;
+    color: var(--accent-dark);
+}
+
+.duel-reset-button {
+    align-self: center;
+    width: auto;
+    min-height: 0;
+    padding: 8px 22px;
+    font-size: 0.82rem;
+    opacity: 0.6;
+}
+
+.duel-reset-button:hover,
+.duel-reset-button:active {
+    opacity: 1;
+}
+
+.duel-stop-button {
+    min-height: 58px;
+}
+
+@media (max-width: 768px) {
+    .app {
+        display: block;
+        padding: 0;
+        min-height: 100dvh;
+    }
+
+    .floating-options {
+        top: calc(var(--safe-top) + 10px);
+        right: calc(var(--safe-right) + 10px);
+    }
+
+    .floating-options + .app {
+        padding-top: calc(var(--safe-top) + 62px);
+    }
+
+    .card {
+        width: 100%;
+        max-width: none;
+        max-height: none;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 18px;
+        padding-top: 18px;
+        padding-right: max(18px, var(--safe-right));
+        padding-bottom: max(18px, var(--safe-bottom));
+        padding-left: max(18px, var(--safe-left));
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+    }
+
+    .floating-options + .app .card {
+        min-height: calc(100dvh - (var(--safe-top) + 62px));
+    }
+
+    h1 {
+        margin: 8px 0 16px;
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+    }
+
+    .letter-box {
+        min-height: clamp(180px, 34dvh, 300px);
+        margin-bottom: 18px;
+        border-radius: 22px;
+    }
+
+    .category-box {
+        min-height: clamp(150px, 26dvh, 220px);
+        border-radius: 18px;
+        margin-bottom: 14px;
+    }
+
+    .timer-panel,
+    .history {
+        border-radius: 18px;
+    }
+
+    .history {
+        padding: 16px;
+    }
+
+    .history-list {
+        max-height: none;
+        min-height: 52px;
+    }
+
+    .meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+    }
+
+    button,
+    .small-nav,
+    .button-option,
+    .history-category {
+        min-height: 52px;
+    }
+
+    .stop-countdown-box {
+        min-width: min(72vw, 240px);
+        min-height: 110px;
+        font-size: clamp(2rem, 11vw, 3rem);
+    }
+
+    .duel-mode-card {
+        width: 100%;
+    }
+
+    .duel-board {
+        gap: 12px;
+    }
+
+    .duel-history-list {
+        gap: 8px;
+        max-height: clamp(70px, 13dvh, 130px);
+        padding-bottom: 8px;
+    }
+
+    .duel-history-letter {
+        min-height: 44px;
+    }
+
+    .duel-letter-box {
+        min-height: clamp(90px, 14dvh, 160px);
+    }
+}
+
+@media (max-width: 900px) {
+    .duel-layout {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "board board"
+            "hist-l hist-r";
+        gap: 14px;
+    }
+
+    .duel-board {
+        grid-area: board;
+    }
+
+    .duel-history-left {
+        grid-area: hist-l;
+        transform: none;
+    }
+
+    .duel-history:not(.duel-history-left) {
+        grid-area: hist-r;
+    }
+
+    .duel-history {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .app {
+        padding: 0;
+    }
+
+    .nav-links {
+        gap: 8px;
+    }
+
+    .nav-links .small-nav {
+        width: 100%;
+    }
+
+    .card {
+        padding: 16px;
+        padding-top: 16px;
+        padding-right: max(16px, var(--safe-right));
+        padding-bottom: max(16px, var(--safe-bottom));
+        padding-left: max(16px, var(--safe-left));
+    }
+
+    .floating-options + .app .card {
+        min-height: calc(100dvh - (var(--safe-top) + 58px));
+    }
+
+    .duel-stop-button {
+        min-height: 52px;
+    }
+
+    .meta {
+        grid-template-columns: 1fr;
+    }
+
+    .history-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .history-list,
+    .duel-history-list {
+        gap: 8px;
+    }
 }

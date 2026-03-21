@@ -31,21 +31,17 @@
         <section class="card">
             <p class="eyebrow">Państwa Miasta</p>
             <h1>Losowanie litery</h1>
-            <a class="small-nav" href="kategorie.html">Losuj kategorie</a>
+            <div class="nav-links">
+                <a class="small-nav" href="kategorie.html">Losuj kategorie</a>
+                <a class="small-nav" href="1vs1.html">Tryb 1vs1</a>
+            </div>
 
             <div class="letter-box" id="letterBox">?</div>
 
-            <div class="timer-panel">
+            <div class="timer-panel" id="timerPanel">
                 <p class="timer-label">Timer rundy</p>
                 <p class="timer-display" id="timerDisplay">01:00</p>
-
-                <label for="timerSelect" class="timer-select-label">Czas</label>
-                <select id="timerSelect">
-                    <option value="60" selected>1 min</option>
-                    <option value="120">2 min</option>
-                    <option value="180">3 min</option>
-                    <option value="300">5 min</option>
-                </select>
+                <p class="timer-hint" id="timerHint">kliknij aby zmienić czas</p>
             </div>
 
             <div class="history">
