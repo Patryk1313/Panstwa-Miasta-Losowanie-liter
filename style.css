@@ -14,6 +14,7 @@
 
 * {
     box-sizing: border-box;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -57,6 +58,7 @@ body {
 .card {
     display: block;
     width: min(100%, 460px);
+    min-height: min(92vh, 860px);
     min-height: min(92dvh, 860px);
     margin: 0 auto;
     padding: clamp(18px, 5vw, 32px);
@@ -64,7 +66,9 @@ body {
     border-radius: 28px;
     background: rgba(255, 255, 255);
     box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
+    max-height: min(92vh, 860px);
     max-height: min(92dvh, 860px);
     overflow: auto;
     overscroll-behavior: contain;
@@ -142,6 +146,7 @@ h1 {
     border: 1px solid rgba(51, 51, 51, 0.08);
     background: rgba(255, 255, 255, 0.95);
     /* box-shadow: 0 20px 40px rgba(51, 51, 51, 0.16); */
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     display: grid;
     gap: 10px;
@@ -374,12 +379,12 @@ h1 {
     position: fixed;
     left: 50%;
     top: 50%;
+    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     z-index: 999;
     border-radius: 14px;
     border: 3px solid rgba(178, 66, 40, 0.5);
     background: rgba(255, 255, 255, 0.96);
-
     color: #b24228;
     font-size: 2.2rem;
     font-weight: 700;
@@ -387,6 +392,20 @@ h1 {
 
 .stop-countdown-box.is-visible {
     display: grid;
+}
+
+.stop-countdown-top {
+    top: 50%;
+    left: calc(50% - 10px);
+    -webkit-transform: translate(-100%, -50%) rotate(180deg);
+    transform: translate(-100%, -50%) rotate(180deg);
+}
+
+.stop-countdown-bottom {
+    top: 50%;
+    left: calc(50% + 10px);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 button {
@@ -623,7 +642,11 @@ button:disabled {
 }
 
 .duel-history-left {
+    -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .duel-history-list {
@@ -648,7 +671,11 @@ button:disabled {
 }
 
 .duel-side-top {
+    -webkit-transform: rotate(180deg);
     transform: rotate(180deg);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .duel-letter-box {
@@ -715,6 +742,7 @@ button.duel-letter-box:active,
         width: 100%;
         max-width: none;
         max-height: none;
+        min-height: 100vh;
         min-height: 100dvh;
         margin: 0;
         padding: 18px;
@@ -727,6 +755,7 @@ button.duel-letter-box:active,
         border-right: 0;
         box-shadow: none;
         background: rgba(255, 255, 255, 0.96);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
     }
 
@@ -791,45 +820,44 @@ button.duel-letter-box:active,
         width: 100%;
     }
 
+    .duel-layout {
+        gap: 8px;
+    }
+
     .duel-board {
-        gap: 12px;
+        gap: 10px;
+    }
+
+    .duel-history {
+        padding: 10px 8px;
     }
 
     .duel-history-list {
-        gap: 8px;
-        max-height: clamp(70px, 13dvh, 130px);
-        padding-bottom: 8px;
+        gap: 6px;
+        max-height: clamp(80px, 15dvh, 140px);
+        padding-bottom: 6px;
     }
 
     .duel-history-letter {
-        min-height: 44px;
+        min-height: 40px;
+        font-size: 0.9rem;
     }
 
     .duel-letter-box {
         min-height: clamp(90px, 14dvh, 160px);
+        font-size: clamp(2.4rem, 10vw, 4rem);
+    }
+
+    .duel-stop-button {
+        min-height: 44px;
+        font-size: 0.82rem;
     }
 }
 
 @media (max-width: 900px) {
     .duel-layout {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-            "board board"
-            "hist-l hist-r";
-        gap: 14px;
-    }
-
-    .duel-board {
-        grid-area: board;
-    }
-
-    .duel-history-left {
-        grid-area: hist-l;
-        transform: none;
-    }
-
-    .duel-history:not(.duel-history-left) {
-        grid-area: hist-r;
+        grid-template-columns: minmax(72px, 110px) minmax(0, 1fr) minmax(72px, 110px);
+        gap: 10px;
     }
 
     .duel-history {

@@ -125,6 +125,14 @@ function playTimerEndSound() {
     playTone(200, 0.11, "triangle", 0.03, 0.08);
 }
 
+function playTimerTickSound(remaining) {
+    if (remaining <= 3) {
+        playTone(660, 0.12, "square", 0.15);
+    } else {
+        playTone(480, 0.10, "sine", 0.12);
+    }
+}
+
 function formatTime(totalSeconds) {
     const safeSeconds = Math.max(0, totalSeconds);
     const minutes = Math.floor(safeSeconds / 60);
@@ -166,6 +174,8 @@ function startRoundTimer() {
             updateTimerDisplay();
             statusMessage.textContent = "Koniec czasu rundy. Losuj kolejna litere.";
             playTimerEndSound();
+        } else if (timerRemaining <= 10) {
+            playTimerTickSound(timerRemaining);
         }
     }, 1000);
 }
