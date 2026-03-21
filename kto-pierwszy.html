@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Państwa Miasta - Blitz</title>
+    <meta name="description" content="Tryb Blitz do gry Państwa Miasta. Jednoczesne losowanie litery i kategorii, 3 sekundy na odpowiedź i szybka decyzja o punkcie w popupie.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="app">
+        <section class="card duel-mode-card race-mode-card">
+            <div class="race-board">
+                <section class="duel-side duel-side-top race-side" aria-label="Gracz górny">
+                    <div class="race-player-card" id="racePlayerTop">
+                        <p class="race-player-label" id="racePlayerLabelTop">Gracz górny</p>
+                        <strong class="race-score" id="raceScoreTop">0 pkt</strong>
+                        <button id="raceBuzzTop" type="button" class="race-buzz-button">ODPOWIADAM</button>
+                    </div>
+                </section>
+
+                <section class="race-center" aria-label="Aktualna runda">
+                    <div class="drawbox drawbox-mirror" id="drawBoxMirror" role="button" tabindex="0" aria-label="Losowanie rundy">
+                        <span class="drawbox-letter" id="drawBoxLetterMirror">?</span>
+                        <span class="drawbox-category" id="drawBoxCategoryMirror">Kategoria</span>
+                        <span class="drawbox-hint" id="drawBoxHintMirror">Losuj</span>
+                    </div>
+
+                    <p class="status race-status" id="raceStatus">Losuj pierwszą rundę.</p>
+                    <div class="race-lead-track" aria-label="Pasek prowadzenia">
+                        <span class="race-lead-line"></span>
+                        <span class="race-lead-dot race-lead-dot-top" id="raceLeadTop"></span>
+                        <span class="race-lead-dot race-lead-dot-bottom" id="raceLeadBottom"></span>
+                    </div>
+                    <button id="skipRoundButton" type="button" class="button-secondary race-skip-button" hidden>Pomiń rundę</button>
+
+                    <div class="drawbox" id="drawBox" role="button" tabindex="0" aria-label="Losowanie rundy">
+                        <span class="drawbox-letter" id="drawBoxLetter">?</span>
+                        <span class="drawbox-category" id="drawBoxCategory">Kategoria</span>
+                        <span class="drawbox-hint" id="drawBoxHint">Losuj</span>
+                    </div>
+                </section>
+
+                <section class="duel-side race-side" aria-label="Gracz dolny">
+                    <div class="race-player-card" id="racePlayerBottom">
+                        <p class="race-player-label" id="racePlayerLabelBottom">Gracz dolny</p>
+                        <strong class="race-score" id="raceScoreBottom">0 pkt</strong>
+                        <button id="raceBuzzBottom" type="button" class="race-buzz-button">ODPOWIADAM</button>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <div class="race-app-controls">
+            <a href="index.html" class="button-secondary race-app-control">Powrót</a>
+            <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
+            <button id="resetRaceButton" type="button" class="button-secondary race-app-control">Reset</button>
+        </div>
+    </main>
+
+    <div class="race-modal-backdrop" id="raceModal" hidden>
+        <div class="race-modal race-modal-mirror">
+            <p class="race-modal-label" id="raceModalLabelMirror">Blitz</p>
+            <div class="race-modal-value" id="raceModalValueMirror">3</div>
+            <p class="race-modal-text" id="raceModalTextMirror">Gracz odpowiada.</p>
+            <div class="race-modal-actions" id="raceModalActionsMirror" hidden>
+                <button id="awardPointButtonMirror" type="button">Przyznaj punkt</button>
+                <button id="denyPointButtonMirror" type="button" class="button-secondary">Brak punktu</button>
+            </div>
+        </div>
+        <div class="race-modal" role="dialog" aria-modal="true" aria-labelledby="raceModalLabel">
+            <p class="race-modal-label" id="raceModalLabel">Blitz</p>
+            <div class="race-modal-value" id="raceModalValue">3</div>
+            <p class="race-modal-text" id="raceModalText">Gracz odpowiada.</p>
+            <div class="race-modal-actions" id="raceModalActions" hidden>
+                <button id="awardPointButton" type="button">Przyznaj punkt</button>
+                <button id="denyPointButton" type="button" class="button-secondary">Brak punktu</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="race-settings-backdrop" id="raceSettingsModal" hidden>
+        <div class="race-settings-modal" role="dialog" aria-modal="true" aria-labelledby="raceSettingsTitle">
+            <p class="race-modal-label">Ustawienia</p>
+            <h2 id="raceSettingsTitle">Gracze</h2>
+            <label class="race-settings-field" for="playerTopInput">
+                <span>Imię górnego gracza</span>
+                <input id="playerTopInput" type="text" maxlength="24" autocomplete="off" />
+            </label>
+            <label class="race-settings-field" for="playerBottomInput">
+                <span>Imię dolnego gracza</span>
+                <input id="playerBottomInput" type="text" maxlength="24" autocomplete="off" />
+            </label>
+            <div class="race-settings-actions">
+                <button id="saveSettingsButton" type="button">Zapisz</button>
+                <button id="closeSettingsButton" type="button" class="button-secondary">Zamknij</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="kto-pierwszy.js"></script>
+</body>
+</html>
