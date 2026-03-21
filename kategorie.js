@@ -63,14 +63,56 @@ const categories = [
     "Rzecz w łazience",
     "Rzecz w plecaku",
     "Miejsce w szkole",
-    "Przedmiot na biurku"
+    "Przedmiot na biurku",
+    "Marka",
+    "Narzędzie",
+    "Materiał",
+    "Zawód sportowy",
+    "Gra mobilna",
+    "Aplikacja",
+    "Serial animowany",
+    "Film animowany",
+    "Książka",
+    "Komiks",
+    "Postać historyczna",
+    "Naukowiec",
+    "Element garderoby",
+    "Kosmetyk",
+    "Przedmiot kuchenny",
+    "Danie regionalne",
+    "Deser",
+    "Sos",
+    "Przyprawa",
+    "Nabiał",
+    "Marka odzieżowa",
+    "Sieć sklepów",
+    "Miejsce turystyczne",
+    "Zabytek",
+    "Pasmo górskie",
+    "Wyspa",
+    "Jezioro",
+    "Park narodowy",
+    "Środek płatniczy",
+    "Waluta",
+    "Język programowania",
+    "Przeglądarka internetowa",
+    "System operacyjny",
+    "Komponent komputera",
+    "Emoji",
+    "Cecha charakteru",
+    "Emocja pozytywna",
+    "Emocja negatywna",
+    "Rzecz w biurze",
+    "Rzecz w samochodzie"
 ];
 
-const defaultCategory = "?";
+const defaultCategory = "Państwo-Miasto";
+const categoryStorageKey = "panstwa-miasta-category-state";
 
 const categoryBox = document.getElementById("categoryBox");
 const categoryInfo = document.getElementById("categoryInfo");
 const drawCategoryButton = document.getElementById("drawCategoryButton");
+const resetCategoryButton = document.getElementById("resetCategoryButton");
 const categoryDrawCount = document.getElementById("categoryDrawCount");
 const categoryRemainingCount = document.getElementById("categoryRemainingCount");
 const categoryHistoryList = document.getElementById("categoryHistoryList");
@@ -134,6 +176,63 @@ function playCategoryDrawDoneSound() {
 function playCategoryRemoveSound() {
     playTone(280, 0.06, "sine", 0.025, 0);
     playTone(220, 0.08, "sine", 0.02, 0.05);
+}
+
+function saveCategoryState() {
+    const state = {
+        currentCategory,
+        categoryHistory
+    };
+
+    localStorage.setItem(categoryStorageKey, JSON.stringify(state));
+}
+
+function loadCategoryState() {
+    const savedState = localStorage.getItem(categoryStorageKey);
+
+    if (!savedState) {
+        currentCategory = defaultCategory;
+        categoryBox.textContent = defaultCategory;
+        categoryInfo.textContent = `Domyślna kategoria: ${defaultCategory}.`;
+        return;
+    }
+
+    try {
+        const parsedState = JSON.parse(savedState);
+        const savedHistory = Array.isArray(parsedState.categoryHistory) ? parsedState.categoryHistory : [];
+        const validHistory = savedHistory.filter((category) => categories.includes(category));
+
+        categoryHistory.push(...validHistory);
+        currentCategory = categories.includes(parsedState.currentCategory) ? parsedState.currentCategory : validHistory.at(-1) ?? defaultCategory;
+        categoryBox.textContent = currentCategory;
+
+        if (validHistory.length > 0) {
+            categoryInfo.textContent = `Wylosowana kategoria: ${currentCategory}.`;
+        } else {
+            categoryInfo.textContent = `Domyślna kategoria: ${defaultCategory}.`;
+        }
+    } catch {
+        localStorage.removeItem(categoryStorageKey);
+        currentCategory = defaultCategory;
+        categoryBox.textContent = defaultCategory;
+        categoryInfo.textContent = `Domyślna kategoria: ${defaultCategory}.`;
+    }
+}
+
+function resetCategoryState() {
+    if (isDrawingCategory) {
+        return;
+    }
+
+    currentCategory = defaultCategory;
+    categoryHistory.length = 0;
+    categoryBox.textContent = defaultCategory;
+    categoryInfo.textContent = `Zresetowano. Domyślna kategoria: ${defaultCategory}.`;
+    drawCategoryButton.disabled = false;
+    saveCategoryState();
+    renderStats();
+    renderHistory();
+    playCategoryRemoveSound();
 }
 
 function renderStats() {
@@ -217,6 +316,7 @@ function finishCategoryDraw(nextCategory) {
     categoryInfo.textContent = `Wylosowana kategoria: ${currentCategory}.`;
     drawCategoryButton.disabled = categoryHistory.length === categories.length;
     playCategoryDrawDoneSound();
+    saveCategoryState();
     renderStats();
     renderHistory();
 }
@@ -249,10 +349,13 @@ function handleHistoryClick(event) {
 
     renderStats();
     renderHistory();
+    saveCategoryState();
 }
 
 drawCategoryButton.addEventListener("click", drawCategory);
+resetCategoryButton.addEventListener("click", resetCategoryState);
 categoryBox.addEventListener("click", drawCategory);
 categoryHistoryList.addEventListener("click", handleHistoryClick);
+loadCategoryState();
 renderStats();
 renderHistory();

@@ -1,13 +1,15 @@
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const storageKey = "panstwa-miasta-letter-history";
+const timerOptions = [60, 120, 180, 300];
 
 const letterBox = document.getElementById("letterBox");
-const drawCount = document.getElementById("drawCount");
 const remainingCount = document.getElementById("remainingCount");
 const historyList = document.getElementById("historyList");
 const statusMessage = document.getElementById("statusMessage");
 const drawButton = document.getElementById("drawButton");
 const resetButton = document.getElementById("resetButton");
+const timerDisplay = document.getElementById("timerDisplay");
+const timerSelect = document.getElementById("timerSelect");
 const optionsButton = document.getElementById("optionsButton");
 const optionsPanel = document.getElementById("optionsPanel");
 const floatingOptions = document.getElementById("floatingOptions");
@@ -18,6 +20,9 @@ let currentLetter = null;
 let draws = 0;
 let isDrawing = false;
 let audioContext = null;
+let timerDuration = 60;
+let timerRemaining = 60;
+let timerIntervalId = null;
 const drawnLetters = [];
 const settings = {
     excludeYV: true,
@@ -29,7 +34,7 @@ function getActiveLetters() {
         return letters;
     }
 
-    return letters.filter((letter) => letter !== "Y" && letter !== "V" && letter !== "X");
+    return letters.filter((letter) => letter !== "Y" && letter !== "V" && letter !== "X" && letter !== "Q");
 }
 
 function normalizeStateToSettings() {
@@ -114,12 +119,60 @@ function playResetSound() {
     playTone(220, 0.09, "sine", 0.025, 0.06);
 }
 
+function playTimerEndSound() {
+    playTone(250, 0.08, "triangle", 0.03, 0);
+    playTone(200, 0.11, "triangle", 0.03, 0.08);
+}
+
+function formatTime(totalSeconds) {
+    const safeSeconds = Math.max(0, totalSeconds);
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = safeSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateTimerDisplay() {
+    timerDisplay.textContent = formatTime(timerRemaining);
+    timerDisplay.classList.toggle("timer-warning", timerRemaining <= 10);
+}
+
+function stopTimer() {
+    if (timerIntervalId !== null) {
+        window.clearInterval(timerIntervalId);
+        timerIntervalId = null;
+    }
+}
+
+function resetTimerToDuration() {
+    stopTimer();
+    timerRemaining = timerDuration;
+    updateTimerDisplay();
+}
+
+function startRoundTimer() {
+    resetTimerToDuration();
+
+    timerIntervalId = window.setInterval(() => {
+        timerRemaining -= 1;
+        updateTimerDisplay();
+
+        if (timerRemaining <= 0) {
+            stopTimer();
+            timerRemaining = 0;
+            updateTimerDisplay();
+            statusMessage.textContent = "Koniec czasu rundy. Losuj kolejna litere.";
+            playTimerEndSound();
+        }
+    }, 1000);
+}
+
 function saveState() {
     const state = {
         currentLetter,
         draws,
         drawnLetters,
-        settings
+        settings,
+        timerDuration
     };
 
     localStorage.setItem(storageKey, JSON.stringify(state));
@@ -144,7 +197,6 @@ function syncControls() {
 }
 
 function renderState() {
-    drawCount.textContent = String(draws);
     letterBox.textContent = currentLetter ?? "?";
     updateRemainingCount();
     renderHistory();
@@ -166,9 +218,12 @@ function loadState() {
         const savedLetters = Array.isArray(parsedState.drawnLetters) ? parsedState.drawnLetters : [];
         const validLetters = savedLetters.filter((letter) => letters.includes(letter));
         const savedSettings = parsedState.settings ?? {};
+        const savedTimerDuration = Number(parsedState.timerDuration);
 
         settings.excludeYV = typeof savedSettings.excludeYV === "boolean" ? savedSettings.excludeYV : true;
         settings.soundEnabled = typeof savedSettings.soundEnabled === "boolean" ? savedSettings.soundEnabled : true;
+        timerDuration = timerOptions.includes(savedTimerDuration) ? savedTimerDuration : 60;
+        timerRemaining = timerDuration;
         drawnLetters.push(...validLetters);
         draws = typeof parsedState.draws === "number" ? Math.min(parsedState.draws, validLetters.length) : validLetters.length;
         currentLetter = validLetters.at(-1) ?? null;
@@ -178,10 +233,13 @@ function loadState() {
 
     normalizeStateToSettings();
     syncOptionsUI();
+    timerSelect.value = String(timerDuration);
+    resetTimerToDuration();
     renderState();
 }
 
 function resetState() {
+    resetTimerToDuration();
     currentLetter = null;
     draws = 0;
     drawnLetters.length = 0;
@@ -267,6 +325,7 @@ function finishDraw(nextLetter) {
 
     saveState();
     renderState();
+    startRoundTimer();
 
     letterBox.classList.remove("animate");
     requestAnimationFrame(() => {
@@ -296,6 +355,18 @@ function handleExcludeYVChange() {
 
 function handleSoundOptionChange() {
     settings.soundEnabled = !soundOffOption.checked;
+    saveState();
+}
+
+function handleTimerChange() {
+    const nextDuration = Number(timerSelect.value);
+
+    if (!timerOptions.includes(nextDuration)) {
+        return;
+    }
+
+    timerDuration = nextDuration;
+    resetTimerToDuration();
     saveState();
 }
 
@@ -354,5 +425,6 @@ resetButton.addEventListener("click", resetState);
 optionsButton.addEventListener("click", toggleOptionsPanel);
 excludeYVOption.addEventListener("change", handleExcludeYVChange);
 soundOffOption.addEventListener("change", handleSoundOptionChange);
+timerSelect.addEventListener("change", handleTimerChange);
 document.addEventListener("keydown", handleKeyboardShortcuts);
 loadState();
