@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Państwa Miasta - Blitz</title>
-    <meta name="description" content="Tryb Blitz do gry Państwa Miasta. Jednoczesne losowanie litery i kategorii, 3 sekundy na odpowiedź i szybka decyzja o punkcie w popupie.">
+    <meta name="description" content="Tryb Blitz do gry Państwa Miasta. Jednoczesne losowanie litery i kategorii, 5 sekund na odpowiedź i szybka decyzja o punkcie w popupie.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+    <link rel="stylesheet" href="../styles/main.css">
 </head>
 <body>
     <main class="app">
@@ -56,7 +56,7 @@
         </section>
 
         <div class="race-app-controls">
-            <a href="index.html" class="button-secondary race-app-control">Powrót</a>
+            <a href="../index.html" class="button-secondary race-app-control">Powrót</a>
             <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
             <button id="resetRaceButton" type="button" class="button-secondary race-app-control">Reset</button>
         </div>
@@ -95,6 +95,10 @@
                 <span>Imię dolnego gracza</span>
                 <input id="playerBottomInput" type="text" maxlength="24" autocomplete="off" />
             </label>
+            <label class="race-settings-field" for="pointsToWinInput">
+                <span>Gra do (pkt)</span>
+                <input id="pointsToWinInput" type="number" min="1" max="500" step="1" />
+            </label>
             <div class="race-settings-actions">
                 <button id="saveSettingsButton" type="button">Zapisz</button>
                 <button id="closeSettingsButton" type="button" class="button-secondary">Zamknij</button>
@@ -102,6 +106,6 @@
         </div>
     </div>
 
-    <script src="kto-pierwszy.js"></script>
+    <script src="blitz.js"></script>
 </body>
 </html>

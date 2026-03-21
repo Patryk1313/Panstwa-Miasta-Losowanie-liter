@@ -109,6 +109,7 @@ const raceCategories = [
 ];
 const raceStorageKey = "panstwa-miasta-blitz-mode";
 const raceCountdownSeconds = 5;
+const raceDefaultPointsToWin = 100;
 const raceDefaultPlayerNames = {
     top: "Gracz górny",
     bottom: "Gracz dolny"
@@ -152,6 +153,7 @@ const openSettingsButton = document.getElementById("openSettingsButton");
 const raceSettingsModal = document.getElementById("raceSettingsModal");
 const playerTopInput = document.getElementById("playerTopInput");
 const playerBottomInput = document.getElementById("playerBottomInput");
+const pointsToWinInput = document.getElementById("pointsToWinInput");
 const saveSettingsButton = document.getElementById("saveSettingsButton");
 const closeSettingsButton = document.getElementById("closeSettingsButton");
 
@@ -179,6 +181,7 @@ const raceDrawnCategories = [];
 const raceRounds = [];
 let raceSkippedRounds = 0;
 const raceAwardVotes = new Set();
+let racePointsToWin = raceDefaultPointsToWin;
 
 function getRaceAudioContext() {
     if (!window.AudioContext && !window.webkitAudioContext) {
@@ -330,6 +333,7 @@ function saveRaceState() {
         responder: raceResponder,
         scores: raceScores,
         playerNames: racePlayerNames,
+        pointsToWin: racePointsToWin,
         drawnLetters: raceDrawnLetters,
         drawnCategories: raceDrawnCategories,
         skippedRounds: raceSkippedRounds,
@@ -352,11 +356,11 @@ function updateRacePlayerLabels() {
 }
 
 function updateRaceLead() {
-    const trackPositions = 100;
-    const topStep = Math.min(trackPositions - 1, Math.max(0, raceScores.top));
-    const bottomStep = Math.min(trackPositions - 1, Math.max(0, raceScores.bottom));
-    const topPosition = (topStep / (trackPositions - 1)) * 100;
-    const bottomPosition = (bottomStep / (trackPositions - 1)) * 100;
+    const normalizedPointsToWin = Math.max(1, racePointsToWin);
+    const topStep = Math.min(normalizedPointsToWin, Math.max(0, raceScores.top));
+    const bottomStep = Math.min(normalizedPointsToWin, Math.max(0, raceScores.bottom));
+    const topPosition = (topStep / normalizedPointsToWin) * 100;
+    const bottomPosition = (bottomStep / normalizedPointsToWin) * 100;
 
     raceLeadTop.style.left = `${topPosition}%`;
     raceLeadBottom.style.left = `${bottomPosition}%`;
@@ -418,6 +422,7 @@ function renderRaceState() {
 function openRaceSettings() {
     playerTopInput.value = racePlayerNames.top;
     playerBottomInput.value = racePlayerNames.bottom;
+    pointsToWinInput.value = String(racePointsToWin);
     raceSettingsModal.hidden = false;
     playerTopInput.focus();
 }
@@ -429,9 +434,14 @@ function closeRaceSettings() {
 function saveRaceSettings() {
     const nextTopName = playerTopInput.value.trim();
     const nextBottomName = playerBottomInput.value.trim();
+    const parsedPointsToWin = Number.parseInt(pointsToWinInput.value, 10);
 
     racePlayerNames.top = nextTopName || raceDefaultPlayerNames.top;
     racePlayerNames.bottom = nextBottomName || raceDefaultPlayerNames.bottom;
+    racePointsToWin = Number.isFinite(parsedPointsToWin)
+        ? Math.min(500, Math.max(1, parsedPointsToWin))
+        : raceDefaultPointsToWin;
+    pointsToWinInput.value = String(racePointsToWin);
     closeRaceSettings();
     saveRaceState();
     renderRaceState();
@@ -483,6 +493,9 @@ function loadRaceState() {
         raceRounds.push(...validRounds);
         racePlayerNames.top = parsedState.playerNames?.top?.trim() || raceDefaultPlayerNames.top;
         racePlayerNames.bottom = parsedState.playerNames?.bottom?.trim() || raceDefaultPlayerNames.bottom;
+        racePointsToWin = Number.isFinite(parsedState.pointsToWin)
+            ? Math.min(500, Math.max(1, parsedState.pointsToWin))
+            : raceDefaultPointsToWin;
         raceSkippedRounds = Number.isFinite(parsedState.skippedRounds) ? Math.max(0, parsedState.skippedRounds) : 0;
         raceCurrentLetter = activeLetters.has(parsedState.currentLetter) ? parsedState.currentLetter : null;
         raceCurrentCategory = raceCategories.includes(parsedState.currentCategory) ? parsedState.currentCategory : null;
