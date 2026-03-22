@@ -61,11 +61,16 @@
             </div>
         </section>
 
-        <div class="race-app-controls">
-            <a href="../index.html" class="button-secondary race-app-control">Powrót</a>
-            <button id="resetRaceButton" type="button" class="button-secondary race-app-control race-app-control-reset">Reset</button>
-            <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
-            <a href="../dashboard.html" class="button-secondary race-app-control">Statystyki</a>
+        <div class="race-nav" id="raceNav">
+            <button class="race-nav-tab" id="raceNavTab" type="button" aria-label="Menu" aria-expanded="false" aria-controls="raceNavPanel">
+                <span class="race-nav-tab-pip"></span>
+            </button>
+            <div class="race-nav-panel" id="raceNavPanel" role="navigation" aria-label="Nawigacja">
+                <a href="../index.html" class="button-secondary race-app-control">Powrót</a>
+                <button id="resetRaceButton" type="button" class="button-secondary race-app-control race-app-control-reset">Reset</button>
+                <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
+                <a href="../dashboard.html" class="button-secondary race-app-control">Statystyki</a>
+            </div>
         </div>
     </main>
 
@@ -123,6 +128,28 @@
         </div>
     </div>
 
+    <script>
+        (function () {
+            var nav = document.getElementById('raceNav');
+            var tab = document.getElementById('raceNavTab');
+            if (!nav || !tab) return;
+            function close() {
+                nav.classList.remove('is-open');
+                tab.setAttribute('aria-expanded', 'false');
+            }
+            tab.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var open = nav.classList.toggle('is-open');
+                tab.setAttribute('aria-expanded', String(open));
+            });
+            document.addEventListener('click', function (e) {
+                if (nav.classList.contains('is-open') && !nav.contains(e.target)) close();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') close();
+            });
+        }());
+    </script>
     <script src="blitz.js"></script>
 </body>
 </html>
