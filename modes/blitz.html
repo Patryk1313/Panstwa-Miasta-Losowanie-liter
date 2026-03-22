@@ -61,10 +61,19 @@
             </div>
         </section>
 
-        <div class="race-app-controls">
-            <a href="../index.html" class="button-secondary race-app-control">Powrót</a>
-            <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
-            <button id="resetRaceButton" type="button" class="button-secondary race-app-control">Reset</button>
+        <div class="race-nav-wrapper" id="raceNavWrapper">
+            <button class="race-nav-toggle" id="raceNavToggle" type="button" aria-label="Menu" aria-expanded="false">
+                <svg class="race-nav-toggle-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="4" y1="5" x2="16" y2="5"/>
+                    <line x1="4" y1="10" x2="16" y2="10"/>
+                    <line x1="4" y1="15" x2="16" y2="15"/>
+                </svg>
+            </button>
+            <div class="race-app-controls">
+                <a href="../index.html" class="button-secondary race-app-control">Powrót</a>
+                <button id="openSettingsButton" type="button" class="button-secondary race-app-control">Ustawienia</button>
+                <button id="resetRaceButton" type="button" class="button-secondary race-app-control">Reset</button>
+            </div>
         </div>
     </main>
 
@@ -122,6 +131,34 @@
         </div>
     </div>
 
+    <script>
+        (function () {
+            var wrapper = document.getElementById('raceNavWrapper');
+            var toggle = document.getElementById('raceNavToggle');
+            if (!wrapper || !toggle) return;
+
+            function close() {
+                wrapper.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var isOpen = wrapper.classList.toggle('is-open');
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            document.addEventListener('click', function (e) {
+                if (wrapper.classList.contains('is-open') && !wrapper.contains(e.target)) {
+                    close();
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') close();
+            });
+        }());
+    </script>
     <script src="blitz.js"></script>
 </body>
 </html>
