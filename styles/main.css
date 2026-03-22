@@ -1540,7 +1540,7 @@ button.duel-letter-box:active,
         bottom: 44px;
         left: 0;
         right: 0;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
         padding: 12px max(12px, var(--safe-right)) 12px max(12px, var(--safe-left));
         border-radius: 16px 16px 0 0;

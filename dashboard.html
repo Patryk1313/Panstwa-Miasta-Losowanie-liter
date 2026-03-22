@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Państwa Miasta - Statystyki</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .dash-card {
+            width: min(100%, 560px);
+            min-height: unset;
+            max-height: unset;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .dash-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            margin-bottom: -8px;
+        }
+
+        .dash-back:hover {
+            text-decoration: underline;
+        }
+
+        .dash-empty {
+            text-align: center;
+            color: rgba(51, 51, 51, 0.45);
+            font-size: 0.9rem;
+            padding: 32px 0 8px;
+        }
+
+        /* Score row */
+        .dash-scores {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dash-score-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dash-score-block:last-child {
+            text-align: right;
+        }
+
+        .dash-score-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(51,51,51,0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dash-score-value {
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text);
+        }
+
+        .dash-score-value.is-winner {
+            color: var(--accent);
+        }
+
+        .dash-score-sep {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(51,51,51,0.2);
+            text-align: center;
+        }
+
+        .dash-goal {
+            text-align: center;
+            font-size: 0.78rem;
+            color: rgba(51,51,51,0.4);
+            margin-top: -8px;
+        }
+
+        /* Bar progress */
+        .dash-bar-row {
+            display: grid;
+            gap: 6px;
+        }
+
+        .dash-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(51,51,51,0.55);
+        }
+
+        .dash-bar-label span:last-child {
+            color: var(--text);
+        }
+
+        .dash-bar-track {
+            height: 8px;
+            border-radius: 8px;
+            background: rgba(51,51,51,0.07);
+            overflow: hidden;
+        }
+
+        .dash-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            background: var(--accent);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dash-bar-fill.is-bottom {
+            background: #e07b2e;
+        }
+
+        /* Section heading */
+        .dash-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(51,51,51,0.4);
+            margin: 0 0 10px;
+        }
+
+        /* Stats grid */
+        .dash-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .dash-meta-item {
+            background: rgba(51,51,51,0.04);
+            border-radius: 14px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .dash-meta-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: rgba(51,51,51,0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .dash-meta-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Top lists */
+        .dash-list {
+            display: grid;
+            gap: 6px;
+        }
+
+        .dash-list-item {
+            display: grid;
+            grid-template-columns: 1.4rem 1fr auto;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .dash-list-rank {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: rgba(51,51,51,0.3);
+            text-align: right;
+        }
+
+        .dash-list-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .dash-list-count {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.78rem;
+        }
+
+        /* Divider */
+        .dash-divider {
+            height: 1px;
+            background: rgba(51,51,51,0.07);
+            margin: 0;
+        }
+
+        @media (max-width: 480px) {
+            .dash-meta-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dash-score-value {
+                font-size: 1.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app">
+        <section class="card dash-card">
+            <a href="modes/blitz.html" class="dash-back">← Wróć do Blitz</a>
+
+            <div>
+                <p class="eyebrow">Blitz</p>
+                <h1 style="margin-bottom:0">Statystyki</h1>
+            </div>
+
+            <div id="dashContent">
+                <p class="dash-empty">Brak danych — zagraj najpierw rundę w trybie Blitz.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            var raw = localStorage.getItem('panstwa-miasta-blitz-mode');
+            var container = document.getElementById('dashContent');
+
+            if (!raw) return;
+
+            var state;
+            try { state = JSON.parse(raw); } catch (e) { return; }
+
+            var rounds = Array.isArray(state.rounds) ? state.rounds : [];
+            var scores = state.scores || { top: 0, bottom: 0 };
+            var names = state.playerNames || { top: 'Gracz górny', bottom: 'Gracz dolny' };
+            var ptw = state.pointsToWin || 100;
+            var skipped = state.skippedRounds || 0;
+
+            var total = rounds.length;
+            var awarded = rounds.filter(function(r){return r.awarded;});
+            var topPoints = awarded.filter(function(r){return r.responder==='top';}).length;
+            var bottomPoints = awarded.filter(function(r){return r.responder==='bottom';}).length;
+            var missed = rounds.filter(function(r){return !r.awarded;}).length;
+            var topWinner = scores.top > scores.bottom;
+            var bottomWinner = scores.bottom > scores.top;
+
+            // Letter frequency
+            var letterMap = {};
+            rounds.forEach(function(r){
+                if (r.letter) letterMap[r.letter] = (letterMap[r.letter]||0)+1;
+            });
+            var topLetters = Object.entries(letterMap)
+                .sort(function(a,b){return b[1]-a[1];})
+                .slice(0,5);
+
+            // Category frequency
+            var catMap = {};
+            rounds.forEach(function(r){
+                if (r.category) catMap[r.category] = (catMap[r.category]||0)+1;
+            });
+            var topCats = Object.entries(catMap)
+                .sort(function(a,b){return b[1]-a[1];})
+                .slice(0,5);
+
+            var maxScore = Math.max(scores.top, scores.bottom, 1);
+
+            function bar(pct, isBottom) {
+                return '<div class="dash-bar-track"><div class="dash-bar-fill' + (isBottom?' is-bottom':'') + '" style="width:' + pct + '%"></div></div>';
+            }
+
+            var html = '';
+
+            // Scores
+            html += '<div class="dash-scores">';
+            html += '<div class="dash-score-block">';
+            html += '<span class="dash-score-name">' + esc(names.top) + '</span>';
+            html += '<span class="dash-score-value' + (topWinner?' is-winner':'') + '">' + scores.top + '</span>';
+            html += '</div>';
+            html += '<div class="dash-score-sep">vs</div>';
+            html += '<div class="dash-score-block" style="text-align:right">';
+            html += '<span class="dash-score-name">' + esc(names.bottom) + '</span>';
+            html += '<span class="dash-score-value' + (bottomWinner?' is-winner':'') + '">' + scores.bottom + '</span>';
+            html += '</div>';
+            html += '</div>';
+            html += '<p class="dash-goal">Cel: ' + ptw + ' pkt</p>';
+
+            // Progress bars
+            if (total > 0) {
+                html += '<div>';
+                html += '<p class="dash-section-title">Postęp</p>';
+                html += '<div class="dash-bar-row">';
+                html += '<div class="dash-bar-label"><span>' + esc(names.top) + '</span><span>' + scores.top + ' pkt</span></div>';
+                html += bar(Math.round((scores.top/ptw)*100), false);
+                html += '</div>';
+                html += '<div class="dash-bar-row" style="margin-top:10px">';
+                html += '<div class="dash-bar-label"><span>' + esc(names.bottom) + '</span><span>' + scores.bottom + ' pkt</span></div>';
+                html += bar(Math.round((scores.bottom/ptw)*100), true);
+                html += '</div>';
+                html += '</div>';
+
+                html += '<div class="dash-divider"></div>';
+
+                // Meta grid
+                html += '<div>';
+                html += '<p class="dash-section-title">Przebieg gry</p>';
+                html += '<div class="dash-meta-grid">';
+                html += metaItem('Rundy', total);
+                html += metaItem('Punkty', awarded.length);
+                html += metaItem('Pominięte', skipped);
+                html += metaItem('Bez punktu', missed);
+                html += metaItem(esc(names.top) + ' pkt', topPoints);
+                html += metaItem(esc(names.bottom) + ' pkt', bottomPoints);
+                html += '</div>';
+                html += '</div>';
+            }
+
+            if (topLetters.length > 0) {
+                html += '<div class="dash-divider"></div>';
+                html += '<div>';
+                html += '<p class="dash-section-title">Najczęstsze litery</p>';
+                html += '<div class="dash-list">';
+                topLetters.forEach(function(entry, i){
+                    html += '<div class="dash-list-item">'
+                        + '<span class="dash-list-rank">' + (i+1) + '.</span>'
+                        + '<span class="dash-list-name">' + esc(entry[0]) + '</span>'
+                        + '<span class="dash-list-count">' + entry[1] + 'x</span>'
+                        + '</div>';
+                });
+                html += '</div>';
+                html += '</div>';
+            }
+
+            if (topCats.length > 0) {
+                html += '<div class="dash-divider"></div>';
+                html += '<div>';
+                html += '<p class="dash-section-title">Najczęstsze kategorie</p>';
+                html += '<div class="dash-list">';
+                topCats.forEach(function(entry, i){
+                    html += '<div class="dash-list-item">'
+                        + '<span class="dash-list-rank">' + (i+1) + '.</span>'
+                        + '<span class="dash-list-name">' + esc(entry[0]) + '</span>'
+                        + '<span class="dash-list-count">' + entry[1] + 'x</span>'
+                        + '</div>';
+                });
+                html += '</div>';
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+
+            function metaItem(label, value) {
+                return '<div class="dash-meta-item">'
+                    + '<span class="dash-meta-label">' + label + '</span>'
+                    + '<span class="dash-meta-value">' + value + '</span>'
+                    + '</div>';
+            }
+
+            function esc(str) {
+                return String(str)
+                    .replace(/&/g,'&amp;')
+                    .replace(/</g,'&lt;')
+                    .replace(/>/g,'&gt;')
+                    .replace(/"/g,'&quot;');
+            }
+        }());
+    </script>
+</body>
+</html>
