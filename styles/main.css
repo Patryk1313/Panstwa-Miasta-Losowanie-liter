@@ -1080,19 +1080,92 @@ button.duel-letter-box:active,
     opacity: 0;
 }
 
-.race-app-controls {
+/* ── Nav drawer ───────────────────────────────────────── */
+.race-nav {
     position: fixed;
     top: 50%;
-    right: 14px;
-    display: grid;
-    gap: 8px;
+    right: 0;
     transform: translateY(-50%);
     z-index: 40;
+    display: flex;
+    align-items: center;
+}
+
+/* Edge tab — half-circle on right edge */
+.race-nav-tab {
+    order: -1;
+    flex-shrink: 0;
+    width: 28px;
+    height: 56px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-right: none;
+    border-radius: 56px 0 0 56px;
+    background: rgba(0,0,0,0.42);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, width 0.2s;
+}
+
+.race-nav-tab:hover {
+    background: rgba(0,0,0,0.62);
+    width: 34px;
+}
+
+.race-nav-tab-pip {
+    display: block;
+    width: 3px;
+    height: 22px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.55);
+    transition: background 0.2s, transform 0.25s;
+}
+
+.race-nav.is-open .race-nav-tab {
+    background: rgba(0,0,0,0.65);
+}
+
+.race-nav.is-open .race-nav-tab-pip {
+    background: rgba(255,255,255,0.95);
+    transform: scaleY(0.6);
+}
+
+/* Sliding panel */
+.race-nav-panel {
+    display: grid;
+    gap: 8px;
+    padding: 10px 14px 10px 10px;
+    border-radius: 0 0 0 14px;
+    background: rgba(15,15,15,0.78);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-right: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(12px);
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0.22s;
+}
+
+.race-nav.is-open .race-nav-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0s;
+}
+
+/* keep the old selector for button styles */
+.race-app-controls {
+    display: contents;
 }
 
 .race-app-control-reset {
-    background: rgba(255, 255, 255, 0.18) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255,255,255,0.14) !important;
+    border-color: rgba(255,255,255,0.28) !important;
     font-weight: 700;
 }
 
@@ -1436,27 +1509,79 @@ button.duel-letter-box:active,
         min-height: 120px;
     }
 
-    .race-app-controls {
-        position: fixed;
+    .race-nav {
         top: auto;
         right: 0;
         bottom: 0;
         left: 0;
         transform: none;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* On mobile the tab is a handle bar at the very bottom */
+    .race-nav-tab {
+        order: 1;
+        width: 100%;
+        height: 38px;
+        border-radius: 14px 14px 0 0;
+        border: none;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        background: rgba(15,15,15,0.82);
+        backdrop-filter: blur(12px);
+        justify-content: center;
+    }
+
+    .race-nav-tab:hover { width: 100%; }
+
+    .race-nav-tab-pip {
+        width: 32px;
+        height: 4px;
+        border-radius: 3px;
+        background: rgba(255,255,255,0.3);
+    }
+
+    .race-nav.is-open .race-nav-tab-pip {
+        background: rgba(255,255,255,0.75);
+    }
+
+    .race-nav-panel {
+        order: 0;
+        position: absolute;
+        bottom: 38px;
+        left: 0;
+        right: 0;
+        display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
-        padding: 10px max(12px, var(--safe-right)) max(10px, var(--safe-bottom)) max(12px, var(--safe-left));
-        border-radius: 18px 18px 0 0;
-        background: rgba(255, 255, 255, 0.94);
-        border: 1px solid rgba(51, 51, 51, 0.08);
+        padding: 12px max(12px, var(--safe-right)) 12px max(12px, var(--safe-left));
+        border-radius: 16px 16px 0 0;
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(51,51,51,0.08);
         border-bottom: none;
-        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.10);
-        backdrop-filter: blur(12px);
+        box-shadow: 0 -8px 28px rgba(0,0,0,0.14);
+        transform: translateY(100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease, visibility 0s 0.32s;
+        pointer-events: none;
+    }
+
+    .race-nav.is-open .race-nav-panel {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease, visibility 0s 0s;
+    }
+
+    .race-app-controls {
+        display: contents;
     }
 
     .race-app-control-reset {
-        background: rgba(29, 107, 82, 0.1) !important;
-        border-color: rgba(29, 107, 82, 0.25) !important;
+        background: rgba(29,107,82,0.1) !important;
+        border-color: rgba(29,107,82,0.25) !important;
         color: var(--accent) !important;
     }
 
@@ -1523,8 +1648,8 @@ button.duel-letter-box:active,
         padding: 16px;
     }
 
-    .race-app-controls {
-        padding: 8px max(8px, var(--safe-right)) max(8px, var(--safe-bottom)) max(8px, var(--safe-left));
+    .race-nav-panel {
+        padding: 10px max(8px, var(--safe-right)) 10px max(8px, var(--safe-left));
         gap: 6px;
     }
 
