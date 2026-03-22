@@ -1080,74 +1080,20 @@ button.duel-letter-box:active,
     opacity: 0;
 }
 
-/* Pull-tab nav wrapper — always-visible tab on right edge (desktop) */
-.race-nav-wrapper {
+.race-app-controls {
     position: fixed;
     top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    z-index: 40;
-    display: flex;
-    align-items: center;
-}
-
-.race-nav-toggle {
-    order: -1;
-    flex-shrink: 0;
-    width: 26px;
-    height: 64px;
-    padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-right: none;
-    border-radius: 12px 0 0 12px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    color: rgba(255, 255, 255, 0.65);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, color 0.2s;
-}
-
-.race-nav-toggle:hover {
-    background: rgba(255, 255, 255, 0.18);
-    color: #fff;
-}
-
-.race-nav-toggle-icon {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.3s ease;
-}
-
-.race-nav-wrapper.is-open .race-nav-toggle-icon {
-    transform: rotate(90deg);
-}
-
-.race-app-controls {
+    right: 14px;
     display: grid;
     gap: 8px;
-    padding: 10px 14px 10px 10px;
-    border-radius: 0 0 0 12px;
-    background: rgba(18, 18, 18, 0.72);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: none;
-    /* Hidden by default */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(10px);
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.25s;
+    transform: translateY(-50%);
+    z-index: 40;
 }
 
-.race-nav-wrapper.is-open .race-app-controls {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-    pointer-events: auto;
-    transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0s;
+.race-app-control-reset {
+    background: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    font-weight: 700;
 }
 
 .race-app-control {
@@ -1490,78 +1436,28 @@ button.duel-letter-box:active,
         min-height: 120px;
     }
 
-    .race-nav-wrapper {
+    .race-app-controls {
+        position: fixed;
         top: auto;
         right: 0;
         bottom: 0;
         left: 0;
         transform: none;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .race-nav-toggle {
-        order: 1;
-        width: 100%;
-        height: 44px;
-        flex-shrink: 0;
-        border-radius: 16px 16px 0 0;
-        border: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(18, 18, 18, 0.85);
-        backdrop-filter: blur(14px);
-        color: rgba(255, 255, 255, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-family: inherit;
-        font-size: 0.72rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    .race-nav-toggle::before {
-        content: '';
-        display: block;
-        width: 28px;
-        height: 3px;
-        border-radius: 2px;
-        background: rgba(255, 255, 255, 0.28);
-    }
-
-    .race-nav-toggle-icon {
-        display: none;
-    }
-
-    .race-app-controls {
-        order: 0;
-        position: absolute;
-        bottom: 44px;
-        left: 0;
-        right: 0;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
-        padding: 12px max(12px, var(--safe-right)) 12px max(12px, var(--safe-left));
-        border-radius: 16px 16px 0 0;
-        background: rgba(255, 255, 255, 0.96);
+        padding: 10px max(12px, var(--safe-right)) max(10px, var(--safe-bottom)) max(12px, var(--safe-left));
+        border-radius: 18px 18px 0 0;
+        background: rgba(255, 255, 255, 0.94);
         border: 1px solid rgba(51, 51, 51, 0.08);
         border-bottom: none;
-        box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.14);
-        backdrop-filter: blur(10px);
-        transform: translateY(100%);
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, visibility 0s 0.35s;
-        pointer-events: none;
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.10);
+        backdrop-filter: blur(12px);
     }
 
-    .race-nav-wrapper.is-open .race-app-controls {
-        transform: translateY(0);
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, visibility 0s 0s;
+    .race-app-control-reset {
+        background: rgba(29, 107, 82, 0.1) !important;
+        border-color: rgba(29, 107, 82, 0.25) !important;
+        color: var(--accent) !important;
     }
 
     .race-app-control {
@@ -1628,13 +1524,13 @@ button.duel-letter-box:active,
     }
 
     .race-app-controls {
-        padding: 10px max(8px, var(--safe-right)) 10px max(8px, var(--safe-left));
-        gap: 8px;
+        padding: 8px max(8px, var(--safe-right)) max(8px, var(--safe-bottom)) max(8px, var(--safe-left));
+        gap: 6px;
     }
 
     .race-app-control {
         min-height: 36px;
-        font-size: 0.78rem;
-        padding: 8px 6px;
+        font-size: 0.75rem;
+        padding: 8px 4px;
     }
 }
